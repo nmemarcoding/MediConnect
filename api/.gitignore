@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+.DS_Store
+Dockerfile
+.Dockerfile 
+.dockerignore
+../.DS_Store
+.env
