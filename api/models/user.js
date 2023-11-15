@@ -37,17 +37,6 @@ const userSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
-userSchema.pre('save', async function(next) {
-    if (!this.membershipNumber) {
-        const lastUser = await mongoose.model('User').findOne().sort('-membershipNumber');  // Find the user with the highest membershipNumber
-        if (!lastUser) {
-            // No users in the database, start from 10000000
-            this.membershipNumber = 12345678;
-        } else {
-            this.membershipNumber = lastUser.membershipNumber + 1;
-        }
-    }
-    next();
-});
+
 
 module.exports = mongoose.model('User', userSchema);
