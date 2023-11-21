@@ -3,28 +3,24 @@ import { Link } from 'react-router-dom';
 import { publicRequest } from '../../hooks/requestMethods';
 import { useNavigate } from 'react-router-dom';
 
-export default function SignupPage() {
+const SignupPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    phoneNumber: '',
     password: '',
-    confirmPassword: ''
+    repeatPassword: ''
   });
 
-  const handleInputChange = (event) => {
-    const { id, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [id]: value
-    }));
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.repeatPassword) {
       alert('Passwords do not match');
       return;
     }
@@ -34,6 +30,14 @@ export default function SignupPage() {
       alert('Please fill out all fields');
       return;
     }
+
+    // Check if password meets requirements
+    const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      alert('Password must include at least one uppercase letter, one special character, one number, and be at least 8 characters long');
+      return;
+    }
+
     publicRequest().post('auth/register', formData)
       .then((response) => {
         console.log(response);
@@ -48,112 +52,58 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-0 pt-12 pb-12">
-      <h2 className="text-3xl sm:text-4xl font-semibold mb-2 tracking-wide text-blue-600 uppercase">Medi Connect</h2>
-      <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Sign Up</h1>
-      <form className="w-full max-w-md" onSubmit={handleSubmit}>
-        
-        <div className="mb-4">
-          <label htmlFor="firstName" className="text-gray-700 font-bold mb-2 block">
-            First Name
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Enter your first name"
-            value={formData.firstName}
-            onChange={handleInputChange}
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label htmlFor="lastName" className="text-gray-700 font-bold mb-2 block">
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Enter your last name"
-            value={formData.lastName}
-            onChange={handleInputChange}
-          />
-        </div>
+    <div className="flex flex-col h-screen bg-gray-100">
+      <div className="flex justify-center items-center h-16 bg-green-400 text-white">
+        <h1 className="text-2xl md:text-4xl font-bold">MediConnect</h1>
+      </div>
+      <div className="grid place-items-center mx-2 my-20 sm:my-auto">
+        {/* Card for Sign Up form */}
+        <div className="w-11/12 p-12 sm:w-8/12 md:w-1/2 lg:w-5/12 bg-white rounded-lg shadow-lg">
+          <h2 className="text-center font-semibold text-3xl lg:text-4xl text-gray-800">Sign Up</h2>
 
-        <div className="mb-4">
-          <label htmlFor="email" className="text-gray-700 font-bold mb-2 block">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Enter your email address"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label htmlFor="phoneNumber" className="text-gray-700 font-bold mb-2 block">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Enter your phone number"
-            value={formData.phoneNumber}
-            onChange={handleInputChange}
-          />
-        </div>
+          <form className="mt-6" onSubmit={handleSubmit}>
+            <div className="flex justify-center">
+              <div className="w-full">
+                {/* First Name */}
+                <label htmlFor="firstName" className="block text-xs font-semibold text-gray-600 uppercase">First Name</label>
+                <input id="firstName" type="text" name="firstName" placeholder="Nikolai" autoComplete="firstName" value={formData.firstName} onChange={handleChange} className="block w-full py-3 px-1 mt-2 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
 
-        <div className="mb-4">
-          <label htmlFor="password" className="text-gray-700 font-bold mb-2 block">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleInputChange}
-            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
-            title="Password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label htmlFor="confirmPassword" className="text-gray-700 font-bold mb-2 block">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            className="appearance-none border shadow-sm rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline-blue transition duration-150"
-            placeholder="Confirm your password"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-          />
-        </div>
+                {/* Last Name */}
+                <label htmlFor="lastName" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Last Name</label>
+                <input id="lastName" type="text" name="lastName" placeholder="Borisov" autoComplete="lastName" value={formData.lastName} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
 
-        <div className="flex items-center justify-center mt-6 sm:mt-8 mb-4 sm:mb-8">
-          <button
-            type="submit"
-            
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150"
-          >
-            Sign Up
-          </button>
-        </div>
+                {/* Email */}
+                <label htmlFor="email" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">E-mail</label>
+                <input id="email" type="email" name="email" placeholder="bonik@example.com" autoComplete="email" value={formData.email} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
 
-        <div className="text-gray-700 font-bold mb-2 block">
-          Already have an account? <Link to="/login" className="text-blue-600 hover:text-blue-800">Log in</Link>
-        </div>
+                {/* Password */}
+                <label htmlFor="password" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password </label>
+                <input id="password" type="password" name="password" placeholder="********" autoComplete="new-password" value={formData.password} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
 
-      </form>
+                {/* Repeat Password */}
+                <label htmlFor="repeatPassword" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Repeat password</label>
+                <input id="repeatPassword" type="password" name="repeatPassword" placeholder="********" autoComplete="new-password" value={formData.repeatPassword} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
+
+                {/* Terms and Conditions */}
+                <div className="flex items-center mt-4">
+                  <input type="checkbox" name="terms" id="terms" className="mr-2" />
+                  <label htmlFor="terms" className="text-xs text-gray-600">By signing up I agree with terms and conditions</label>
+                </div>
+
+                {/* Sign Up Button */}
+                <button type="submit" className="w-full py-3 mt-6 font-medium tracking-widest text-white uppercase bg-green-400 shadow-lg focus:outline-none hover:bg-green-500 hover:shadow-none">
+                  Sign up
+                </button>
+
+                {/* Log In Link */}
+                <p className="flex justify-between inline-block mt-4 text-xs text-gray-500 cursor-pointer hover:text-black">Already registered? <a href="/login" className="text-green-500 hover:text-green-600">Log in</a></p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default SignupPage;
