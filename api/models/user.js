@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'patient'
     },
+    profileCreated: {
+        type: Boolean,
+        default: false
+    },
     
 }, { timestamps: true });
 
