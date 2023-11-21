@@ -43,7 +43,7 @@ const PatientProfileCreation = () => {
         publicRequest().post('patientprofile/create', profileData)
             .then((response) => {
                 alert('Patient profile created successfully');
-                navigate('/dashboard');
+                navigate('/login');
             })
             .catch((error) => {
                 console.log(error);

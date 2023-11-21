@@ -11,6 +11,9 @@ function useAuthRedirect() {
     if (Object.keys(userInfo).length === 0) {
       navigate('/login');
       return;
+    }else if(!userInfo.profileCreated ){
+      navigate('/patientprofilecreation');
+      return;
     }
   }, []);
 }

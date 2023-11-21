@@ -1,7 +1,9 @@
 import React from 'react';
 import Navbar from '../../components/navbar/navbar';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
 
 function HomePage() {
+  useAuthRedirect();
   return (
     <div>
       <Navbar />
