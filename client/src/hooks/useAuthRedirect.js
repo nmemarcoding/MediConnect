@@ -4,18 +4,18 @@ import store from '../store.js';
 
 function useAuthRedirect() {
     const navigate = useNavigate();
-  useEffect(() => {
-    const userInfo = store.getState().userInf;
     
+    useEffect(() => {
+        const userInfo = store.getState().userInf;
 
-    if (Object.keys(userInfo).length === 0) {
-      navigate('/login');
-      return;
-    }else if(!userInfo.profileCreated && userInfo.userType === 'patient' ){
-      navigate('/patientprofilecreation');
-      return;
-    }
-  }, []);
+        if (Object.keys(userInfo).length === 0) {
+            navigate('/login');
+        } else if (!userInfo.profileCreated && userInfo.userType === 'patient') {
+            navigate('/patientprofilecreation');
+        } else if (!userInfo.profileCreated && userInfo.userType === 'doctor') {
+            navigate('/doctorprofilecreation');
+        }
+    }, [navigate]); 
 }
 
 export default useAuthRedirect;
