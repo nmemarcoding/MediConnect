@@ -9,19 +9,24 @@ const SignupPage = () => {
     firstName: '',
     lastName: '',
     email: '',
+    repeatEmail: '', // Added repeatEmail field
     password: '',
-    repeatPassword: ''
+    repeatPassword: '',
+    userType: '' // Added userType field
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (formData.password !== formData.repeatPassword) {
       alert('Passwords do not match');
+      return;
+    }
+    if (formData.email !== formData.repeatEmail) { // Check if emails match
+      alert('Emails do not match');
       return;
     }
     // Check if all fields have a value
@@ -42,7 +47,6 @@ const SignupPage = () => {
       .then((response) => {
         console.log(response);
         alert('Account created successfully');
-        
         navigate('/login');
       })
       .catch((error) => {
@@ -76,6 +80,10 @@ const SignupPage = () => {
                 <label htmlFor="email" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">E-mail</label>
                 <input id="email" type="email" name="email" placeholder="bonik@example.com" autoComplete="email" value={formData.email} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
 
+                {/* Repeat Email */}
+                <label htmlFor="repeatEmail" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Repeat Email</label>
+                <input id="repeatEmail" type="email" name="repeatEmail" placeholder="bonik@example.com" autoComplete="email" value={formData.repeatEmail} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
+
                 {/* Password */}
                 <label htmlFor="password" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Password </label>
                 <input id="password" type="password" name="password" placeholder="********" autoComplete="new-password" value={formData.password} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
@@ -83,6 +91,14 @@ const SignupPage = () => {
                 {/* Repeat Password */}
                 <label htmlFor="repeatPassword" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">Repeat password</label>
                 <input id="repeatPassword" type="password" name="repeatPassword" placeholder="********" autoComplete="new-password" value={formData.repeatPassword} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required />
+
+                {/* User Type */}
+                <label htmlFor="userType" className="block mt-2 text-xs font-semibold text-gray-600 uppercase">User Type</label>
+                <select id="userType" name="userType" value={formData.userType} onChange={handleChange} className="block w-full py-3 px-1 mt-2 mb-4 text-gray-800 appearance-none border-b-2 border-gray-100 focus:outline-none focus:border-green-400" required>
+                  <option value="">Select User Type</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="patient">Patient</option>
+                </select>
 
                 {/* Terms and Conditions */}
                 <div className="flex items-center mt-4">

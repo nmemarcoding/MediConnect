@@ -11,7 +11,7 @@ function useAuthRedirect() {
     if (Object.keys(userInfo).length === 0) {
       navigate('/login');
       return;
-    }else if(!userInfo.profileCreated ){
+    }else if(!userInfo.profileCreated && userInfo.userType === 'patient' ){
       navigate('/patientprofilecreation');
       return;
     }
