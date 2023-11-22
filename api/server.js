@@ -25,6 +25,7 @@ mongoose
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/patientProfile', require('./routes/patientProfile'));
+app.use('/api/doctorProfile', require('./routes/doctorProfile'));
 
 
 // Use the PORT environment variable, or default to 3002 if it's not set
