@@ -10,7 +10,7 @@ const Navbar = () => {
 
 
     // Placeholder for user context, replace with your actual user context logic
-    const user = { isLoggedIn: userInfo.firstName, role: userInfo.rule };
+    const user = { isLoggedIn: userInfo.firstName, role: userInfo.userType};
 
     const handleLogout = () => {
         // Implement your logout logic here

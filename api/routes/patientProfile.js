@@ -14,7 +14,7 @@ router.post('/create', async(req, res) => {
         if (!userinfo) {
             return res.status(404).json("User not found");
         }
-        if (userinfo.rule !== 'patient') {
+        if (userinfo.userType !== 'patient') {
             return res.status(403).json("Access denied: User is not a patient");
         }
         const patientProfileExist = await PatientProfile.findOne({ user: req.body.user });

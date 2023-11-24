@@ -8,7 +8,7 @@ const doctorProfileSchema = new mongoose.Schema({
     },
     specializations: [{
         type: String,
-        required: true
+        default: ''
     }],
     qualifications: [{
         degree: { type: String, default: '' },
@@ -17,7 +17,7 @@ const doctorProfileSchema = new mongoose.Schema({
     }],
     experience: {
         type: Number, // years of experience
-        required: true
+        default: 0
     },
     bio: {
         type: String,
@@ -35,7 +35,7 @@ const doctorProfileSchema = new mongoose.Schema({
     }],
     consultationFees: {
         type: Number,
-        required: true
+        default: 0
     },
     ratings: [{
         type: mongoose.Schema.Types.ObjectId,

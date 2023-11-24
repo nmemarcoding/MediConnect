@@ -5,7 +5,7 @@ import useStore from '../../store';
 const PatientProfileCreation = () => {
     const navigate = useNavigate();
     const userInfo = useStore((state) => state.userInf);
-   
+    const deleteUserInfo = useStore((state) => state.deleteUserInfo);
     
     const [profileData, setProfileData] = useState({
         user: userInfo._id,
@@ -43,7 +43,8 @@ const PatientProfileCreation = () => {
         publicRequest().post('patientprofile/create', profileData)
             .then((response) => {
                 alert('Patient profile created successfully');
-                navigate('/login');
+                deleteUserInfo();
+                navigate('/');
             })
             .catch((error) => {
                 console.log(error);
