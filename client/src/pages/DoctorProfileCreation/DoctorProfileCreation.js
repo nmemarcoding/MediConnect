@@ -7,6 +7,7 @@ import useStore from '../../store';
 const DoctorProfileCreation = () => {
     const navigate = useNavigate();
     const userInfo = useStore((state) => state.userInf);
+    const deleteUserInfo = useStore((state) => state.deleteUserInfo);
     const [profileData, setProfileData] = useState({
         userId: userInfo._id, // Replace with actual user ID
         specializations: [],
@@ -56,7 +57,8 @@ const DoctorProfileCreation = () => {
             .then((response) => {
                 console.log(response);
                 alert('Doctor profile created successfully');
-                navigate('/login');
+                deleteUserInfo();
+                navigate('/');
             })
             .catch((error) => {
                 console.log(error);
