@@ -29,10 +29,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    rule:{
-        enum: ['doctor', 'patient'],
+    userType: {
         type: String,
+        enum: ['doctor', 'patient'],
         default: 'patient'
+    },
+    profileCreated: {
+        type: Boolean,
+        default: false
     },
     
 }, { timestamps: true });
