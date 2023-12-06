@@ -4,6 +4,7 @@ import LoginPage from './pages/loginPage/loginPage';
 import HomePage from './pages/homePage/homePage';
 import PatientProfileCreation from './pages/PatientProfileCreation/PatientProfileCreation';
 import DoctorProfileCreation from './pages/DoctorProfileCreation/DoctorProfileCreation';
+import PatientDashboard from './pages/PatientDashboard/PatientDashboard';
 
 function App() {
 
@@ -14,13 +15,11 @@ function App() {
     <Router>
           <div className="app ">
             <Routes>
-              
-          
-              
               <Route path="/signup" element={<SignupPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
               <Route path="/patientprofilecreation" element={<PatientProfileCreation/>}/>
               <Route path="/doctorprofilecreation" element={<DoctorProfileCreation/>}/>
+              <Route path="/patientdashboard" element={<PatientDashboard/>}/>
               <Route path="/" element={<HomePage/>}/>
               </Routes>
           </div>
