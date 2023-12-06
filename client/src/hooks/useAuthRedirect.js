@@ -17,5 +17,8 @@ function useAuthRedirect() {
         }
     }, [navigate]); 
 }
+//  function if user is not patient dont let him come to this page
+
+
 
 export default useAuthRedirect;
