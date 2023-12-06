@@ -3,33 +3,31 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../components/navbar/navbar'; // Adjust the path as needed
 import useStore from '../../store';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
-
+import { publicRequest } from '../../hooks/requestMethods';
 
 const EditPatientProfile = () => {
     useAuthRedirect();
     const navigate = useNavigate();
-    const userInfo = useStore((state) => state.userInf);
-    const { patientId } = useParams(); // Assuming you're using React Router with a route like "/edit-profile/:patientId"
-    
+    const userId = useStore((state) => state.userInf._id);
+    const [userInfo, setUserInfo] = useState({}); 
+    useEffect(() => {
+        publicRequest().get(`patientProfile/${userId}`)
+            .then((response) => {
+                setUserInfo(response.data);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+                alert(error.response.data || 'An error occurred');
+            });
+    }, [userId]);
+    console.log(userInfo);
+    const ss = userInfo._id
     const [profileData, setProfileData] = useState({
-        // Define initial profile structure
-        firstName: userInfo.firstName,
-        lastName: userInfo.lastName,
-        email: userInfo.email,
-        dateOfBirth: '',
-        gender: 'other',
-        contactNumber: '',
-        address: '',
-        profilePicture: '',
-        medicalHistory: '',
-        // ...other profile fields
+       
     });
 
-    useEffect(() => {
-        // Fetch patient profile data from backend using patientId and update state
-        // Replace with your actual API call
-        // Example: fetchProfileData(patientId).then(data => setProfileData(data));
-    }, [patientId]);
+    
 
     const handleChange = (e) => {
         setProfileData({ ...profileData, [e.target.name]: e.target.value });
@@ -51,27 +49,27 @@ const EditPatientProfile = () => {
                     {/* Profile Edit Form Fields */}
                     <div className="mb-4">
                         <label htmlFor="firstName" className="block text-gray-700 text-sm font-bold mb-2">First Name</label>
-                        <input type="text" id="firstName" name="firstName" value={profileData.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="firstName" name="firstName" value={userInfo?.user?.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="lastName" className="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" value={profileData.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="lastName" name="lastName" value={userInfo?.user?.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                        <input type="email" id="email" name="email" value={profileData.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="email" id="email" name="email" value={userInfo?.user?.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="dateOfBirth" className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
-                        <input type="date" id="dateOfBirth" name="dateOfBirth" value={profileData.dateOfBirth} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" value={userInfo?.dateOfBirth} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="gender" className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                        <select id="gender" name="gender" value={profileData.gender} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <select id="gender" name="gender" value={userInfo?.gender} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -81,12 +79,12 @@ const EditPatientProfile = () => {
 
                     <div className="mb-4">
                         <label htmlFor="contactNumber" className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
-                        <input type="text" id="contactNumber" name="contactNumber" value={profileData.contactNumber} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="contactNumber" name="contactNumber" value={userInfo?.contactNumber} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">Address</label>
-                        <textarea id="address" name="address" value={profileData.address} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <textarea id="address" name="address" value={userInfo?.address} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
