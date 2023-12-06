@@ -54,7 +54,7 @@ router.get('/:patientId', async(req, res) => {
         if (!mongoose.isValidObjectId(req.params.patientId)) {
             return res.status(400).json("Invalid patient ID");
         }
-        const patientProfile = await PatientProfile.findOne({ user: req.params.patientId });
+        const patientProfile = await PatientProfile.findOne({ user: req.params.patientId }).populate('user', 'firstName lastName email');
         if (!patientProfile) {
             return res.status(404).json("Patient profile not found");
         }
