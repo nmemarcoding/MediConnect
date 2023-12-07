@@ -21,8 +21,7 @@ const EditPatientProfile = () => {
                 alert(error.response.data || 'An error occurred');
             });
     }, [userId]);
-    console.log(userInfo);
-    const ss = userInfo._id
+  
     const [profileData, setProfileData] = useState({
        
     });
@@ -35,10 +34,16 @@ const EditPatientProfile = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Submit updated profile data to backend
-        // Replace with your actual API call
-        // Example: updateProfileData(patientId, profileData).then(() => navigate('/dashboard'));
-    };
+        publicRequest().put(`patientProfile/${userId}`, profileData)
+            .then((response) => {;
+                alert('Profile updated successfully');
+                navigate('/patientdashboard');
+            })
+            .catch((error) => {
+                console.log(error);
+                alert(error.response.data || 'An error occurred');
+            });
+         };
 
     return (
         <>
@@ -49,27 +54,27 @@ const EditPatientProfile = () => {
                     {/* Profile Edit Form Fields */}
                     <div className="mb-4">
                         <label htmlFor="firstName" className="block text-gray-700 text-sm font-bold mb-2">First Name</label>
-                        <input type="text" id="firstName" name="firstName" value={userInfo?.user?.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="firstName" name="firstName" placeholder={userInfo?.user?.firstName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="lastName" className="block text-gray-700 text-sm font-bold mb-2">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" value={userInfo?.user?.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="lastName" name="lastName" placeholder={userInfo?.user?.lastName} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                        <input type="email" id="email" name="email" value={userInfo?.user?.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="email" id="email" name="email" placeholder={userInfo?.user?.email} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="dateOfBirth" className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
-                        <input type="date" id="dateOfBirth" name="dateOfBirth" value={userInfo?.dateOfBirth} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" placeholder={userInfo?.dateOfBirth} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="gender" className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                        <select id="gender" name="gender" value={userInfo?.gender} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <select id="gender" name="gender" placeholder={userInfo?.gender} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -79,12 +84,12 @@ const EditPatientProfile = () => {
 
                     <div className="mb-4">
                         <label htmlFor="contactNumber" className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
-                        <input type="text" id="contactNumber" name="contactNumber" value={userInfo?.contactNumber} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <input type="text" id="contactNumber" name="contactNumber" placeholder={userInfo?.contactNumber} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">
                         <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">Address</label>
-                        <textarea id="address" name="address" value={userInfo?.address} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                        <textarea id="address" name="address" placeholder={userInfo?.address} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                     </div>
 
                     <div className="mb-4">

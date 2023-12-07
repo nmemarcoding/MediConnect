@@ -65,4 +65,46 @@ router.get('/:patientId', async(req, res) => {
     }
 });
 
+// rout to update patient profile and populate user to get user info
+router.put('/:patientId', async(req, res) => {
+    try {
+        // Validate patient ID
+        if (!mongoose.isValidObjectId(req.params.patientId)) {
+            return res.status(400).json("Invalid patient ID");
+        }
+        // if firstName or lastName or email provided, update user info
+        if (req.body.firstName || req.body.lastName || req.body.email) {
+            const user = await User.findById(req.params.patientId);
+        
+            if (!user) {
+                return res.status(404).json("User not found");
+            }
+        
+            // Update only the specified fields
+            if (req.body.firstName) user.firstName = req.body.firstName;
+            if (req.body.lastName) user.lastName = req.body.lastName;
+            if (req.body.email) user.email = req.body.email;
+        
+            await user.save();
+        }
+        
+        // Find the patient profile by user field if patientId is user's ID
+        const patientProfile = await PatientProfile.findOne({ user: req.params.patientId }).populate('user', 'firstName lastName email');
+
+        if (!patientProfile) {
+            return res.status(404).json("Patient profile not found");
+        }
+
+        // Update the patient profile
+        Object.assign(patientProfile, req.body);
+        const updatedPatientProfile = await patientProfile.save();
+
+        res.status(200).json(updatedPatientProfile);
+    } catch (err) {
+        res.status(500).json({ message: "An error occurred", error: err.message });
+        console.log(err);
+    }
+});
+
+
 module.exports = router;
