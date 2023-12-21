@@ -6,6 +6,7 @@ import PatientProfileCreation from './pages/PatientProfileCreation/PatientProfil
 import DoctorProfileCreation from './pages/DoctorProfileCreation/DoctorProfileCreation';
 import PatientDashboard from './pages/PatientDashboard/PatientDashboard';
 import EditPatientProfile from './pages/EditPatientProfile/EditPatientProfile';
+import Appointments from './pages/appointments/appointments';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
               <Route path="/doctorprofilecreation" element={<DoctorProfileCreation/>}/>
               <Route path="/patientdashboard" element={<PatientDashboard/>}/>
               <Route path="/editpatientprofile" element={<EditPatientProfile/>}/>
+              <Route path="/appointments" element={<Appointments/>}/>
               <Route path="/" element={<HomePage/>}/>
               </Routes>
           </div>
