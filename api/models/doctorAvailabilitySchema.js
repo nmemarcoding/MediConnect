@@ -6,19 +6,19 @@ const doctorAvailabilitySchema = new mongoose.Schema({
         ref: 'DoctorProfile',
         required: true
     },
-    availableDates: [{
-        date: {
-            type: Date,
+    weeklyAvailability: [{
+        day: {
+            type: String, // e.g., 'Monday', 'Tuesday', etc.
             required: true
         },
-        timeSlots: [{
-            startTime: String, // Format: 'HH:mm'
-            endTime: String,   // Format: 'HH:mm'
-            isBooked: {
-                type: Boolean,
-                default: false
-            }
-        }]
+        start: {
+            type: String, // Time format: 'HH:mm', e.g., '09:00'
+            required: true
+        },
+        end: {
+            type: String, // Time format: 'HH:mm', e.g., '15:00'
+            required: true
+        }
     }]
 });
 
