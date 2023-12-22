@@ -7,6 +7,7 @@ import DoctorProfileCreation from './pages/DoctorProfileCreation/DoctorProfileCr
 import PatientDashboard from './pages/PatientDashboard/PatientDashboard';
 import EditPatientProfile from './pages/EditPatientProfile/EditPatientProfile';
 import Appointments from './pages/appointments/appointments';
+import DoctorAvailability from './pages/doctorAvailability/doctorAvailability';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
               <Route path="/patientdashboard" element={<PatientDashboard/>}/>
               <Route path="/editpatientprofile" element={<EditPatientProfile/>}/>
               <Route path="/appointments" element={<Appointments/>}/>
+              <Route path="/doctoravailability" element={<DoctorAvailability/>}/>
               <Route path="/" element={<HomePage/>}/>
               </Routes>
           </div>
