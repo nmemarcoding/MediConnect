@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const doctorAvailabilitySchema = new mongoose.Schema({
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'DoctorProfile',
+        ref: 'User', 
         required: true
     },
     weeklyAvailability: [{

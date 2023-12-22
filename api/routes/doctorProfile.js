@@ -18,7 +18,7 @@ route.post('/create', async(req, res) => {
         if (user.userType !== 'doctor') {
             return res.status(403).json("Access denied: User is not a doctor");
         }
-        const doctorProfileExist = await DoctorProfile.findOne({ user: req.body.user });
+        const doctorProfileExist = await DoctorProfile.findOne({ userId: req.body.userId });
         if (doctorProfileExist) {
             return res.status(409).json("Doctor profile already exists");
         }
