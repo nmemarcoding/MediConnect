@@ -53,6 +53,7 @@ const DoctorProfileCreation = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        console.log(profileData);
         publicRequest().post('doctorprofile/create', profileData)
             .then((response) => {
                 console.log(response);

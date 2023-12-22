@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const DoctorAvailability = require('../models/doctorAvailabilitySchema')
 const DoctorProfile = require('../models/doctorProfile');
 const Appointment = require('../models/appointmentSchema');
+const User = require('../models/user');
 
 // create doctor availability
 router.post("/create", async(req, res) => {
@@ -12,11 +13,12 @@ router.post("/create", async(req, res) => {
             return res.status(400).json("Invalid doctor ID");
         }
 
-        // Check for doctor existence
-        const doctor = await DoctorProfile.findById(req.body.doctorId);
+        // Check for doctor existence on user schema and user type is doctor
+        const doctor = await User.findOne({ _id: req.body.doctorId, userType: 'doctor' });
         if (!doctor) {
             return res.status(404).json("Doctor not found");
         }
+        
 
         // Find or create the doctor availability document
         let doctorAvailability = await DoctorAvailability.findOne({ doctorId: req.body.doctorId });
@@ -48,14 +50,5 @@ router.post("/create", async(req, res) => {
 });
 
 
-
-// const appointmentExist = await Appointment.findOne({
-//     doctor: req.body.doctorId,
-//     appointmentDate: req.body.day,
-//     appointmentTime: req.body.start
-// });
-// if (appointmentExist) {
-//     return res.status(409).json("Doctor is booked on this date and time");
-// }
 
 module.exports = router;
