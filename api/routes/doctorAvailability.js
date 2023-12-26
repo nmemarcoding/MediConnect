@@ -49,6 +49,14 @@ router.post("/create", async(req, res) => {
     }
 });
 
-
+// getting all doctors availability
+router.get("/getall", async(req, res) => {
+    try {
+        const doctorAvailability = await DoctorAvailability.find();
+        res.status(200).json(doctorAvailability);
+    } catch(err) {
+        res.status(500).json({ message: "An error occurred", error: err.message });
+    }
+});
 
 module.exports = router;
