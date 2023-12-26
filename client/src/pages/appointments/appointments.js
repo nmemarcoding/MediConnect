@@ -18,7 +18,7 @@ const Appointments = () => {
         publicRequest().get('/doctorAvailability/getall')
             .then(response => {
                 setDoctors(response.data.map(doc => ({
-                    id: doc.doctorId,
+                    id: `${doc.doctorId.firstName} ${doc.doctorId.lastName}`,
                     availability: doc.weeklyAvailability
                 })));
             })
