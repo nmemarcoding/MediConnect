@@ -40,6 +40,8 @@ router.post("/create", async(req, res) => {
                 doctorAvailability.weeklyAvailability.push(newDayAvailability);
             }
         });
+        // add visit duration
+        doctorAvailability.visitDuration = req.body.visitDuration;
 
         await doctorAvailability.save();
         res.status(200).json(doctorAvailability);
