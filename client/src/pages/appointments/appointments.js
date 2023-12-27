@@ -19,7 +19,8 @@ const Appointments = () => {
             .then(response => {
                 setDoctors(response.data.map(doc => ({
                     id: `${doc.doctorId.firstName} ${doc.doctorId.lastName}`,
-                    availability: doc.weeklyAvailability
+                    availability: doc.weeklyAvailability,
+                    visitDuration: doc.visitDuration 
                 })));
             })
             .catch(error => {
@@ -27,14 +28,15 @@ const Appointments = () => {
             });
     }, []);
 
-    const createTimeSlots = (start, end) => {
+    const createTimeSlots = (start, end,visitDuration) => {
         const slots = [];
+        console.log(start,end,visitDuration);
         let current = new Date(`2021-01-01T${start}`);
         const endTime = new Date(`2021-01-01T${end}`);
 
         while (current < endTime) {
             slots.push(current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-            current.setMinutes(current.getMinutes() + 30); // Adjust the duration per slot here
+            current.setMinutes(current.getMinutes() + visitDuration); // Adjust the duration per slot here
         }
 
         return slots;
@@ -60,7 +62,7 @@ const Appointments = () => {
         const selectedDoctor = doctors.find(doc => doc.id === appointmentData.doctor);
         const timesForDate = selectedDoctor.availability
                             .filter(a => a.day === selectedDate)
-                            .flatMap(a => createTimeSlots(a.start, a.end));
+                            .flatMap(a => createTimeSlots(a.start, a.end,selectedDoctor.visitDuration));
         setAvailableTimes(timesForDate);
         setAppointmentData({ ...appointmentData, date: selectedDate, time: '' });
     };
