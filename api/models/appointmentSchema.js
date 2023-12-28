@@ -12,7 +12,7 @@ const appointmentSchema = new mongoose.Schema({
         required: true
     },
     appointmentDate: {
-        type: Date,
+        type: String,
         required: true
     },
     appointmentTime: {
@@ -22,7 +22,7 @@ const appointmentSchema = new mongoose.Schema({
     consultationType: {
         type: String,
         enum: ['video', 'audio', 'chat'],
-        required: true
+        default: 'video'
     },
     appointmentStatus: {
         type: String,

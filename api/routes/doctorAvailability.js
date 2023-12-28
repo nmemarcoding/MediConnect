@@ -14,7 +14,7 @@ router.post("/create", async(req, res) => {
         }
 
         // Check for doctor existence on user schema and user type is doctor
-        const doctor = await User.findOne({ _id: req.body.doctorId, userType: 'doctor' });
+        const doctor = await DoctorProfile.findOne({ _id: req.body.doctorId });
         if (!doctor) {
             return res.status(404).json("Doctor not found");
         }
@@ -52,13 +52,24 @@ router.post("/create", async(req, res) => {
 });
 
 // getting all doctors availability
-router.get("/getall", async(req, res) => {
+router.get("/getall", async (req, res) => {
     try {
-        const doctorAvailability = await DoctorAvailability.find().populate('doctorId',"firstName lastName")
-        res.status(200).json(doctorAvailability);
-    } catch(err) {
-        res.status(500).json({ message: "An error occurred", error: err.message });
+      const doctorAvailability = await DoctorAvailability.find()
+        .populate({
+          path: 'doctorId',
+          select: 'userId', // Specify the 'userId' field to populate for 'doctorId'
+          populate: {
+            path: 'userId',
+            select: 'firstName lastName', // Specify the fields to populate for 'userId'
+          },
+        })
+        .exec();
+  
+      res.status(200).json(doctorAvailability);
+    } catch (err) {
+      res.status(500).json({ message: "An error occurred", error: err.message });
     }
-});
+  });
+
 
 module.exports = router;
