@@ -54,7 +54,31 @@ router.post("/create", async(req, res) => {
     }
 });
 
-
+// getting user appointments by patient ID
+router.get("/getpatientappointment/:patientId", async (req, res) => {
+    try {
+      const appointments = await Appointment.find({ patient: req.params.patientId })
+        .populate({
+          path: 'doctor',
+          select: 'userId', // Specify the 'userId' field to populate for 'doctor'
+          populate: {
+            path: 'userId',
+            select: 'firstName lastName profilePicture' // Specify the fields to populate for 'userId'
+          }
+        }).populate({
+          path: 'patient',
+          select: 'user', // Specify the 'user' field to populate for 'patient'
+          populate: {
+            path: 'user',
+            select: 'firstName lastName profilePicture' // Specify the fields to populate for 'user'
+          }
+        })
+        .sort({ appointmentDate: 1, appointmentTime: 1 });
+      res.status(200).json(appointments);
+    } catch(err) {
+      res.status(500).json({ message: "An error occurred", error: err.message });
+    }
+  });
 
 
 module.exports = router;
