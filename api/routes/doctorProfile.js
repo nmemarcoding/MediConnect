@@ -38,6 +38,10 @@ route.post('/create', async(req, res) => {
         // Update user profileCreated field
         user.profileCreated = true;
         await user.save();
+        // now find the doctor profile and add doctor id to user schema
+        const doctorProfile2 = await DoctorProfile.findOne({ userId: req.body.userId });
+        user.patientId= doctorProfile2._id;
+        await user.save();
         res.status(201).json(savedDoctorProfile);
     }catch(err){
         res.status(500).json({ message: "An error occurred", error: err.message });

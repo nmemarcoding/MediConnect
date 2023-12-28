@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const doctorAvailabilitySchema = new mongoose.Schema({
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', 
+        ref: 'DoctorProfile',
         required: true
     },
     weeklyAvailability: [{
@@ -19,7 +19,11 @@ const doctorAvailabilitySchema = new mongoose.Schema({
             type: String, // Time format: 'HH:mm', e.g., '15:00'
             required: true
         }
-    }]
+    }],
+    visitDuration: {
+        type: Number, // In minutes
+        default: 30
+    }
 });
 
 module.exports = mongoose.model('DoctorAvailability', doctorAvailabilitySchema);

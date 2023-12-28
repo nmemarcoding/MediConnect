@@ -12,8 +12,9 @@ const DoctorAvailabilityForm = () => {
     const navigate = useNavigate();
     const userInfo = store.getState().userInf;
     const [availability, setAvailability] = useState({
-        doctorId: userInfo._id, 
+        doctorId: userInfo.patientId, 
         weeklyAvailability: Array(7).fill({ day: '', start: '', end: '' }),
+        visitDuration: '', // Added visitDuration field
         error: '' // To store error messages
     });
 
@@ -47,7 +48,8 @@ const DoctorAvailabilityForm = () => {
 
         const submissionData = {
             doctorId: availability.doctorId,
-            weeklyAvailability: filteredAvailability
+            weeklyAvailability: filteredAvailability,
+            visitDuration: availability.visitDuration // Added visitDuration field
         };
 
         // Perform submission logic here
@@ -87,6 +89,16 @@ const DoctorAvailabilityForm = () => {
                             />
                         </div>
                     ))}
+                    <div className="mb-4"> {/* Added input field for visitDuration */}
+                        <label htmlFor="visitDuration" className="font-semibold">Visit Duration:</label>
+                        <input
+                            type="text"
+                            id="visitDuration"
+                            className="border rounded p-2 ml-2"
+                            value={availability.visitDuration}
+                            onChange={(e) => setAvailability({ ...availability, visitDuration: e.target.value })}
+                        />
+                    </div>
                     <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                         Submit
                     </button>

@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    patientId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PatientProfile',
+        default: null
+    },
     
 }, { timestamps: true });
 

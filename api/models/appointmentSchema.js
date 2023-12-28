@@ -12,17 +12,21 @@ const appointmentSchema = new mongoose.Schema({
         required: true
     },
     appointmentDate: {
-        type: Date,
+        type: String,
         required: true
     },
     appointmentTime: {
         type: String, // could be in HH:mm format
         required: true
     },
+    appointmentDay: {
+        type: String, // could be in HH:mm format
+        required: true
+    },
     consultationType: {
         type: String,
         enum: ['video', 'audio', 'chat'],
-        required: true
+        default: 'video'
     },
     appointmentStatus: {
         type: String,

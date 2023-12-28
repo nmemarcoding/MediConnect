@@ -1,40 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/navbar/navbar'; // Adjust the path as needed
 import { publicRequest } from '../../hooks/requestMethods';
+import store from '../../store.js';
 
 const Appointments = () => {
+    const userInfo = store.getState().userInf;
     const [appointmentData, setAppointmentData] = useState({
         doctor: '',
         date: '',
         time: '',
-        notes: ''
+        notes: '',
+        day:''
     });
-    const [bookedAppointments, setBookedAppointments] = useState([{ /* ... existing appointments ... */ }]);
+    const [bookedAppointments, setBookedAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [availableDates, setAvailableDates] = useState([]);
     const [availableTimes, setAvailableTimes] = useState([]);
-
+    const [availableDays, setAvailableDays] = useState([]);
+    
+   
+    function getAvailableDates(dayNames) {
+        const dayMap = { 'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6 };
+        const daysAvailable = dayNames?.map(dayName => dayMap[dayName]);
+    
+        const result = [];
+        const today = new Date();
+        const thirtyDaysLater = new Date(today);
+        thirtyDaysLater.setDate(today.getDate() + 30);
+    
+        for (let date = today; date <= thirtyDaysLater; date.setDate(date.getDate() + 1)) {
+            const dayOfWeek = date.getDay();
+            if (daysAvailable.includes(dayOfWeek)) {
+                result.push(new Date(date).toLocaleDateString());
+            }
+        }
+        return result;
+    }
+    
+    
+    
+    
     useEffect(() => {
         publicRequest().get('/doctorAvailability/getall')
             .then(response => {
+      
                 setDoctors(response.data.map(doc => ({
-                    id: `${doc.doctorId.firstName} ${doc.doctorId.lastName}`,
-                    availability: doc.weeklyAvailability
+                    id: `${doc.doctorId.userId.firstName} ${doc.doctorId.userId.lastName}`,
+                    availability: doc.weeklyAvailability,
+                    visitDuration: doc.visitDuration,
+                    doctorId: doc.doctorId._id
                 })));
             })
             .catch(error => {
-                console.log(error);
+                window.alert(error.response.data);
             });
     }, []);
 
-    const createTimeSlots = (start, end) => {
+    useEffect(() => {
+        if (!userInfo.patientId) return; 
+        publicRequest().get(`/appointment/getpatientappointment/${userInfo.patientId}`)
+            .then(response => {
+                console.log(response.data);
+                setBookedAppointments(response.data.map(appointment => ({
+                    doctor: `${appointment.doctor.userId.firstName} ${appointment.doctor.userId.lastName}`,
+                    date: appointment.appointmentDay,
+                    time: appointment.appointmentTime,
+                    notes: appointment.notes,
+                    day:appointment.appointmentDate
+                })).reverse());
+            })
+            .catch(error => {
+                window.alert(error.response.data);
+            });
+    }, []);
+
+
+    const createTimeSlots = (start, end,visitDuration) => {
         const slots = [];
         let current = new Date(`2021-01-01T${start}`);
         const endTime = new Date(`2021-01-01T${end}`);
 
         while (current < endTime) {
             slots.push(current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-            current.setMinutes(current.getMinutes() + 30); // Adjust the duration per slot here
+            current.setMinutes(current.getMinutes() + visitDuration); // Adjust the duration per slot here
         }
 
         return slots;
@@ -47,7 +95,7 @@ const Appointments = () => {
             const dates = selectedDoctor.availability.map(a => a.day);
             setAvailableDates([...new Set(dates)]); // Remove duplicates
             setAvailableTimes([]);
-            setAppointmentData({ ...appointmentData, doctor: selectedDoctorId, date: '', time: '' });
+            setAppointmentData({ ...appointmentData, doctor: selectedDoctorId, date: '', time: '', doctorId: selectedDoctor.doctorId });
         } else {
             setAvailableDates([]);
             setAvailableTimes([]);
@@ -60,9 +108,12 @@ const Appointments = () => {
         const selectedDoctor = doctors.find(doc => doc.id === appointmentData.doctor);
         const timesForDate = selectedDoctor.availability
                             .filter(a => a.day === selectedDate)
-                            .flatMap(a => createTimeSlots(a.start, a.end));
+                            .flatMap(a => createTimeSlots(a.start, a.end,selectedDoctor.visitDuration));
         setAvailableTimes(timesForDate);
         setAppointmentData({ ...appointmentData, date: selectedDate, time: '' });
+        const availableDays = getAvailableDates([selectedDate]);
+        setAvailableDays(availableDays);
+       
     };
 
     const handleChange = (e) => {
@@ -71,10 +122,33 @@ const Appointments = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(appointmentData);
-        // Handle the appointment booking logic here
-        // After booking, update the bookedAppointments state or re-fetch appointments
-    };
+        const request = {
+            appointmentDate: appointmentData.day,
+            appointmentTime: appointmentData.time,
+            doctor: appointmentData.doctorId,
+            patient: userInfo.patientId,
+            notes: appointmentData.notes,
+            appointmentDay: appointmentData.date
+
+        };
+        
+        
+        publicRequest().post('/appointment/create', request)
+            .then(res => {
+                window.alert('Appointment booked successfully');
+                window.location.reload();
+                // Update the bookedAppointments state or re-fetch appointments
+            }
+            )
+            .catch(err => {
+             
+                window.alert(err.response.data);
+            });
+            
+
+          };
+   
+          
 
     return (
         <>
@@ -104,7 +178,16 @@ const Appointments = () => {
                             ))}
                         </select>
                     </div>
-
+                    {/* day selection  */}
+                    <div className='mb-4'>
+                        <label htmlFor="date" className="block text-gray-700 text-sm font-bold mb-2">Date</label>
+                        <select id="date" name="date" value={appointmentData.date} onChange={(e)=>setAppointmentData({...appointmentData,day:e.target.value})} className="block w-full border border-gray-300 rounded py-2 px-3 leading-tight focus:outline-none focus:border-gray-500">
+                            <option value="">Select a day</option>
+                            {availableDays.map(date => (
+                                <option key={date} value={date}>{date}</option>
+                            ))}
+                        </select>
+                    </div>
                     {/* Time Selection */}
                     <div className="mb-4">
                         <label htmlFor="time" className="block text-gray-700 text-sm font-bold mb-2">Time</label>
@@ -136,6 +219,7 @@ const Appointments = () => {
                             <div key={index} className="mb-4 p-4 border border-gray-200 rounded">
                                 <p><strong>Doctor:</strong> {appointment.doctor}</p>
                                 <p><strong>Date:</strong> {appointment.date}</p>
+                                <p><strong>Day:</strong> {appointment.day}</p>
                                 <p><strong>Time:</strong> {appointment.time}</p>
                                 {appointment.notes && <p><strong>Notes:</strong> {appointment.notes}</p>}
                             </div>
