@@ -11,10 +11,11 @@ const Appointments = () => {
         time: '',
         notes: ''
     });
-    const [bookedAppointments, setBookedAppointments] = useState([{ /* ... existing appointments ... */ }]);
+    const [bookedAppointments, setBookedAppointments] = useState([]);
     const [doctors, setDoctors] = useState([]);
     const [availableDates, setAvailableDates] = useState([]);
     const [availableTimes, setAvailableTimes] = useState([]);
+  
 
     useEffect(() => {
         publicRequest().get('/doctorAvailability/getall')
@@ -31,6 +32,23 @@ const Appointments = () => {
                 window.alert(error.response.data);
             });
     }, []);
+
+    useEffect(() => {
+        if (!userInfo.patientId) return; 
+        publicRequest().get(`/appointment/getpatientappointment/${userInfo.patientId}`)
+            .then(response => {
+                setBookedAppointments(response.data.map(appointment => ({
+                    doctor: `${appointment.doctor.userId.firstName} ${appointment.doctor.userId.lastName}`,
+                    date: appointment.appointmentDate,
+                    time: appointment.appointmentTime,
+                    notes: appointment.notes
+                })).reverse());
+            })
+            .catch(error => {
+                window.alert(error.response.data);
+            });
+    }, []);
+
 
     const createTimeSlots = (start, end,visitDuration) => {
         const slots = [];
