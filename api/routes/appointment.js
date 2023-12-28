@@ -43,6 +43,7 @@ router.post("/create", async(req, res) => {
             doctor: req.body.doctor,
             appointmentDate: req.body.appointmentDate,
             appointmentTime: req.body.appointmentTime,
+            appointmentDay: req.body.appointmentDay,
             consultationType: req.body.consultationType,
             notes: req.body.notes
         });
