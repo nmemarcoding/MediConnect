@@ -19,7 +19,7 @@ const appointmentSchema = new mongoose.Schema({
         type: String, // could be in HH:mm format
         required: true
     },
-    appointmentTime: {
+    appointmentDay: {
         type: String, // could be in HH:mm format
         required: true
     },
