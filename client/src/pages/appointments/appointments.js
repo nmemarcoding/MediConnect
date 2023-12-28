@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/navbar/navbar'; // Adjust the path as needed
 import { publicRequest } from '../../hooks/requestMethods';
+import store from '../../store.js';
 
 const Appointments = () => {
+    const userInfo = store.getState().userInf;
     const [appointmentData, setAppointmentData] = useState({
         doctor: '',
         date: '',
@@ -17,20 +19,21 @@ const Appointments = () => {
     useEffect(() => {
         publicRequest().get('/doctorAvailability/getall')
             .then(response => {
+      
                 setDoctors(response.data.map(doc => ({
-                    id: `${doc.doctorId.firstName} ${doc.doctorId.lastName}`,
+                    id: `${doc.doctorId.userId.firstName} ${doc.doctorId.userId.lastName}`,
                     availability: doc.weeklyAvailability,
-                    visitDuration: doc.visitDuration 
+                    visitDuration: doc.visitDuration,
+                    doctorId: doc.doctorId._id
                 })));
             })
             .catch(error => {
-                console.log(error);
+                window.alert(error.response.data);
             });
     }, []);
 
     const createTimeSlots = (start, end,visitDuration) => {
         const slots = [];
-        console.log(start,end,visitDuration);
         let current = new Date(`2021-01-01T${start}`);
         const endTime = new Date(`2021-01-01T${end}`);
 
@@ -49,7 +52,7 @@ const Appointments = () => {
             const dates = selectedDoctor.availability.map(a => a.day);
             setAvailableDates([...new Set(dates)]); // Remove duplicates
             setAvailableTimes([]);
-            setAppointmentData({ ...appointmentData, doctor: selectedDoctorId, date: '', time: '' });
+            setAppointmentData({ ...appointmentData, doctor: selectedDoctorId, date: '', time: '', doctorId: selectedDoctor.doctorId });
         } else {
             setAvailableDates([]);
             setAvailableTimes([]);
@@ -73,10 +76,28 @@ const Appointments = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(appointmentData);
-        // Handle the appointment booking logic here
-        // After booking, update the bookedAppointments state or re-fetch appointments
-    };
+        const request = {
+            appointmentDate: appointmentData.date,
+            appointmentTime: appointmentData.time,
+            doctor: appointmentData.doctorId,
+            patient: userInfo.patientId,
+            notes: appointmentData.notes
+
+        };
+        
+        
+        publicRequest().post('/appointment/create', request)
+            .then(res => {
+                window.alert('Appointment booked successfully');
+                // Update the bookedAppointments state or re-fetch appointments
+            }
+            )
+            .catch(err => {
+             
+                window.alert(err.response.data);
+            });
+
+          };
 
     return (
         <>

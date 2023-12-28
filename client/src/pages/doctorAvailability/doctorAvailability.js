@@ -12,7 +12,7 @@ const DoctorAvailabilityForm = () => {
     const navigate = useNavigate();
     const userInfo = store.getState().userInf;
     const [availability, setAvailability] = useState({
-        doctorId: userInfo._id, 
+        doctorId: userInfo.patientId, 
         weeklyAvailability: Array(7).fill({ day: '', start: '', end: '' }),
         visitDuration: '', // Added visitDuration field
         error: '' // To store error messages
