@@ -19,6 +19,10 @@ const appointmentSchema = new mongoose.Schema({
         type: String, // could be in HH:mm format
         required: true
     },
+    appointmentTime: {
+        type: String, // could be in HH:mm format
+        required: true
+    },
     consultationType: {
         type: String,
         enum: ['video', 'audio', 'chat'],
