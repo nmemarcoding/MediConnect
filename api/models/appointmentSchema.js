@@ -25,7 +25,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     consultationType: {
         type: String,
-        enum: ['video', 'audio', 'chat'],
+        enum: ['video', 'audio', 'chat',"in-person"],
         default: 'video'
     },
     appointmentStatus: {
