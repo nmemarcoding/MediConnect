@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { publicRequest } from '../../hooks/requestMethods';
 import Navbar from '../../components/navbar/navbar';
+import store from '../../store.js';
+import { useNavigate } from 'react-router-dom';
 
 const Appointments = () => {
+    const userInfo = store.getState().userInf;
+    const navigate = useNavigate();
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctorId, setSelectedDoctorId] = useState("");
     const [selectedDateTime, setSelectedDateTime] = useState({ day: "", date: "", time: "" });
+    const [selectedConsultationType, setSelectedConsultationType] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [appointmentResult, setAppointmentResult] = useState(null);
+    const [reealDoctorId, setRealDoctorId] = useState(null);
 
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -27,6 +33,7 @@ const Appointments = () => {
 
     const handleDoctorChange = (e) => {
         setSelectedDoctorId(e.target.value);
+        setRealDoctorId(e.target.options[e.target.selectedIndex].getAttribute('data-real-doctor-id'));
         setSelectedDateTime({ day: "", date: "", time: "" });
     };
 
@@ -37,12 +44,32 @@ const Appointments = () => {
         }));
     };
 
+    const handleConsultationTypeChange = (e) => {
+        setSelectedConsultationType(e.target.value);
+    };
+
     const handleBookAppointment = () => {
-        // Perform the booking logic here
-        // You can use the selectedDoctorId, selectedDateTime, and any other necessary data
-        // Update the appointmentResult state with the result of the booking
-        window.alert(appointmentResult);
+        const submissionData = {
+            patient: userInfo.patientId,
+            doctor: reealDoctorId,
+            appointmentDate: selectedDateTime.date,
+            appointmentTime: selectedDateTime.time,
+            appointmentDay: selectedDateTime.day,
+            consultationType: selectedConsultationType,
+            notes: document.getElementById("additional-notes").value
+        };
        
+
+        publicRequest().post('/appointment/create', submissionData)
+            .then(res => {
+                setAppointmentResult('Appointment booked successfully');
+                window.alert('Appointment booked successfully');
+                navigate('/');
+            })
+            .catch(err => {
+                setAppointmentResult('An error occurred');
+                console.log(err.response.data);
+            });
     };
 
     const selectedDoctor = doctors.find(doctor => doctor._id === selectedDoctorId);
@@ -67,7 +94,7 @@ const Appointments = () => {
                 <select id="doctor-select" className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" onChange={handleDoctorChange} value={selectedDoctorId}>
                     <option value="">Select a Doctor</option>
                     {doctors.map((doctor) => (
-                        <option key={doctor._id} value={doctor._id}>
+                        <option key={doctor._id} value={doctor._id} data-real-doctor-id={doctor.doctorId._id}>
                             Dr. {doctor.doctorId.userId.firstName} {doctor.doctorId.userId.lastName}
                         </option>
                     ))}
@@ -111,6 +138,17 @@ const Appointments = () => {
             )}
 
             <div className="mb-4">
+                <label htmlFor="consultation-type-select" className="block text-sm font-medium text-gray-700">Consultation Type</label>
+                <select id="consultation-type-select" className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" onChange={handleConsultationTypeChange} value={selectedConsultationType}>
+                    <option value="">Select a Consultation Type</option>
+                    <option value="video">Video</option>
+                    <option value="audio">Audio</option>
+                    <option value="chat">Chat</option>
+                    <option value="in-person">In-Person</option>
+                </select>
+            </div>
+
+            <div className="mb-4">
                 <label htmlFor="additional-notes" className="block text-sm font-medium text-gray-700">Additional Notes (Optional)</label>
                 <textarea id="additional-notes" rows="4" className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
@@ -123,16 +161,7 @@ const Appointments = () => {
                 <div className="text-green-500 text-center py-4">{appointmentResult}</div>
             )}
 
-            {/* Display selected information */}
-            {selectedDoctor && selectedDateTime.day && selectedDateTime.date && selectedDateTime.time && (
-                <div className="mt-4">
-                    <h3 className="text-lg font-bold">Selected Information:</h3>
-                    <p>Doctor: Dr. {selectedDoctor.doctorId.userId.firstName} {selectedDoctor.doctorId.userId.lastName}</p>
-                    <p>Day: {selectedDateTime.day}</p>
-                    <p>Date: {selectedDateTime.date}</p>
-                    <p>Time: {selectedDateTime.time}</p>
-                </div>
-            )}
+            
         </div>
         </>
     );
