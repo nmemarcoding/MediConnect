@@ -40,6 +40,7 @@ const Navbar = () => {
                                     <>
                                         <Link to="/dashboard" className="py-2 px-2 text-white font-semibold hover:text-gray-300">Dashboard</Link>
                                         <Link to="/schedule" className="py-2 px-2 text-white font-semibold hover:text-gray-300">Schedule</Link>
+                                        <Link to="/doctorappointments" className="py-2 px-2 text-white font-semibold hover:text-gray-300">Appointments</Link> {/* Added Appointments link */}
                                     </>
                                 ) : (
                                     <>
@@ -77,6 +78,7 @@ const Navbar = () => {
                         <>
                             <Link to="/dashboard" className="block py-2 px-4 text-sm text-white hover:bg-green-500">Dashboard</Link>
                             <Link to="/schedule" className="block py-2 px-4 text-sm text-white hover:bg-green-500">Schedule</Link>
+                            <Link to="/appointments" className="block py-2 px-4 text-sm text-white hover:bg-green-500">Appointments</Link> {/* Added Appointments link */}
                         </>
                     )}
                     {user.isLoggedIn && user.role === 'patient' && (
