@@ -114,5 +114,25 @@ router.get("/getdoctorappointment/:doctorId", async (req, res) => {
     }
   });
 
+  // route to update appointment status
+router.put("/updatestatus/:appointmentId", async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.appointmentId)) {
+        return res.status(400).json("Invalid appointment ID");
+    }
+    try {
+      const appointment = await Appointment.findByIdAndUpdate(
+        req.params.appointmentId,
+        { appointmentStatus: req.body.appointmentStatus },
+        { new: true }
+      );
+      // If appointment does not exist
+      if (!appointment) {
+        return res.status(404).json("Appointment not found");
+      }
+      res.status(200).json(appointment);
+    } catch(err) {
+      res.status(500).json({ message: "An error occurred", error: err.message });
+    }
+  });
 
 module.exports = router;
