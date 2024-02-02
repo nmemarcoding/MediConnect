@@ -187,8 +187,10 @@ const Appointments = () => {
                                     <p>Consultation Type: {appointment.consultationType}</p>
                                     <p>Notes: {appointment.notes}</p>
                                     <p>Status: {appointment.appointmentStatus}</p>
-
+                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => navigate('/chat/' + userInfo._id + '/' + appointment.doctor.userId._id)}>Start Chat</button>
                                 </li>
+                                // button for starting chat
+
                             ))}
                         </ul>
                     ) : (
