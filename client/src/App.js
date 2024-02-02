@@ -9,6 +9,7 @@ import EditPatientProfile from './pages/EditPatientProfile/EditPatientProfile';
 import Appointments from './pages/appointments/appointments';
 import DoctorAvailability from './pages/doctorAvailability/doctorAvailability';
 import DoctorAppointments from './pages/doctorAppointments/doctorAppointments'
+import ChatPage from './pages/chatPage/chatPage';
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
               <Route path="/appointments" element={<Appointments/>}/>
               <Route path="/doctoravailability" element={<DoctorAvailability/>}/>
               <Route path="/doctorappointments" element={<DoctorAppointments/>}/>
+              <Route path="/chat/:patientId/:doctorId" element={<ChatPage/>}/>
               <Route path="/" element={<HomePage/>}/>
               </Routes>
           </div>
